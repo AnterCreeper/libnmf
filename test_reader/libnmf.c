@@ -21,16 +21,16 @@ void parse_track(uint32_t* buffer, size_t length, struct nmf_track* content) {
 	}
 	struct nmf_track_header payload;
 	memcpy(&payload, buffer, sizeof(struct nmf_track_header));
-	memcpy(&content[payload.index].header, &payload, sizeof(struct nmf_track_header));
+	memcpy(&content->header, &payload, sizeof(struct nmf_track_header));
 	buffer = buffer + ((uint32_t)sizeof(struct nmf_track_header) / 4);
 	length = length - ((uint32_t)sizeof(struct nmf_track_header) / 4);
 	if (length != 0) {
-		content[payload.index].length = length;
-		content[payload.index].payload = (uint32_t*)malloc(4 * length);
-		memcpy(content[payload.index].payload, buffer, 4 * length);
+		content->length = length;
+		content->payload = (uint32_t*)malloc(4 * length);
+		memcpy(content->payload, buffer, 4 * length);
 	} else {
-		content[payload.index].length = 0;
-		content[payload.index].payload = NULL;
+		content->length = 0;
+		content->payload = NULL;
 	}
 	return;
 }
@@ -45,6 +45,7 @@ void parse_index(uint32_t* buffer, uint32_t length, struct nmf_index* content) {
 }
 
 void parse_nmf(uint32_t* buffer, uint32_t length, struct nmf_container* content) {
+	int tn = 0;
 	int process = 0;
 	while (process < length) {
 		uint32_t tag = buffer[process];
@@ -64,7 +65,7 @@ void parse_nmf(uint32_t* buffer, uint32_t length, struct nmf_container* content)
 			break;
 		case NMF_TRACK:
 			process++;
-			parse_track(&buffer[process], size, content->tracks);
+			parse_track(&buffer[process], size, &content->tracks[tn++]);
 			break;
 		case NMF_INDEX:
 			process++;
