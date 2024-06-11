@@ -19,9 +19,10 @@ void parse_track(uint32_t* buffer, size_t length, struct nmf_track* content) {
 		printf("FIXME! no track memory allocated!\n");
 		exit(1);
 	}
-	struct nmf_track_header payload;
-	memcpy(&payload, buffer, sizeof(struct nmf_track_header));
-	memcpy(&content->header, &payload, sizeof(struct nmf_track_header));
+	//struct nmf_track_header payload;
+	//memcpy(&payload, buffer, sizeof(struct nmf_track_header));
+	//memcpy(&content->header, &payload, sizeof(struct nmf_track_header));
+	memcpy(&content->header, buffer, sizeof(struct nmf_track_header));
 	buffer = buffer + ((uint32_t)sizeof(struct nmf_track_header) / 4);
 	length = length - ((uint32_t)sizeof(struct nmf_track_header) / 4);
 	if (length != 0) {
